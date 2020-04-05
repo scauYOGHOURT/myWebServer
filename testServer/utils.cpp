@@ -12,14 +12,14 @@
 int createListenFd(int port)
 {
     port = (port <= 1024 || port >= 65536) ? 8888 : port;
-
+    //非阻塞套接字
     int listenFd = 0;
     if ((listenFd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0)) == -1)
     {
         printf("[createListenFd] fd = %d socket : %s\n", listenFd, strerror(errno));
         return -1;
     }
-
+    //设置ip与端口可以复用
     int optval = 1;
     if (setsockopt(listenFd, SOL_SOCKET, SO_REUSEADDR, (const void *)&optval, sizeof(int)) == -1)
     {
@@ -27,6 +27,7 @@ int createListenFd(int port)
         return -1;
     }
 
+    //绑定端口
     struct sockaddr_in serverAddr;
     bzero((char *)&serverAddr, sizeof(serverAddr));
     serverAddr.sin_family = AF_INET;
@@ -39,6 +40,7 @@ int createListenFd(int port)
         return -1;
     }
 
+    //监听套接字
     if (listen(listenFd, LISTENQ) == -1)
     {
         printf("[createListenFd] fd = %d listen : %s\n", listenFd, strerror(errno));
@@ -54,6 +56,7 @@ int createListenFd(int port)
     return listenFd;
 }
 
+//设置非阻塞套接字
 int setNonBlocking(int fd)
 {
     int flag = fcntl(fd, F_GETFL, 0);
