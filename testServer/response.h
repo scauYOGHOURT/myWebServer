@@ -1,11 +1,10 @@
 #ifndef __RESPONSE_H__
 #define __RESPONSE_H__
 
-#include "server.h"
-
 #include <string>
 #include <map>
 
+#define CONNECT_TIMEOUT 500
 class Buffer;
 class Response
 {
@@ -18,6 +17,8 @@ public:
     Buffer makeResponse();
     void doStaticResquest(Buffer &output, long fileSize);
     void doErrorResponse(Buffer &output, std::string message);
+
+    ~Response() {}
 
 private:
     std::string getFileType();

@@ -43,13 +43,13 @@ private:
 class TimerManager
 {
 public:
-    TimerManager(Timestamp now) : now(now) {}
+    TimerManager() : now(Clock::now()) {}
 
     void updateTime() { now = Clock::now(); }
-    void addTimer(Request *requert, const int &timeout, const CallBack &cb) {}
-    void delTimer(Request *requert) {}
-    void handleExpireTime() {}
-    int getExpireTime() {}
+    void addTimer(Request *requert, const int &timeout, const CallBack &cb);
+    void delTimer(Request *requert);
+    void handleExpireTimers();
+    int getNextExpireTimer();
 
     ~TimerManager() {}
 

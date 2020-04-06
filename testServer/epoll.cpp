@@ -17,7 +17,6 @@ int Epoll::add(int fd, Request *request, int events)
     event.data.ptr = (void *)request;
     event.events = events;
     int ret = epoll_ctl(epollFd, EPOLL_CTL_ADD, fd, &event);
-
     return ret;
 }
 
@@ -44,6 +43,7 @@ int Epoll::del(int fd, Request *request, int events)
 int Epoll::wait(int timeoutMS)
 {
     int eventsNum = epoll_wait(epollFd, &*events.begin(), static_cast<int>(events.size()), timeoutMS);
+
     if (eventsNum < 0)
         printf("[Epoll::wait] epoll : %s\n", strerror(errno));
     return eventsNum;
@@ -66,6 +66,7 @@ void Epoll::handleEvent(int listenFd, std::shared_ptr<ThreadPool> &threadpool, i
                 (events[i].events & EPOLLHUP) ||
                 (!events[i].events & EPOLLIN))
             {
+                printf("sorry! have error\n");
                 request->setNoWorking();
                 onCloseConnection(request);
             }

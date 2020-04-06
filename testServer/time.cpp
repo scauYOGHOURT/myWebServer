@@ -1,5 +1,5 @@
 #include "timer.h"
-
+#include "request.h"
 void TimerManager::addTimer(Request *request, const int &timeout, const CallBack &cb)
 {
     std::lock_guard<std::mutex> lock(TMlock);
@@ -9,7 +9,7 @@ void TimerManager::addTimer(Request *request, const int &timeout, const CallBack
     Timer *timer = new Timer(now + (MS)timeout, cb);
     timerQueue.push(timer);
 
-    if (request->timer != nullptr)
+    if (request->getTimer() != nullptr)
         delTimer(request);
 
     request->setTimer(timer);
@@ -17,7 +17,7 @@ void TimerManager::addTimer(Request *request, const int &timeout, const CallBack
 
 void TimerManager::delTimer(Request *request)
 {
-    Timer *timer = request->timer;
+    Timer *timer = request->getTimer();
 
     if (timer == nullptr)
         return;
@@ -26,7 +26,7 @@ void TimerManager::delTimer(Request *request)
     request->setTimer(nullptr);
 }
 
-void TimerManager::handleExpireTime()
+void TimerManager::handleExpireTimers()
 {
     std::lock_guard<std::mutex> lock(TMlock);
 
@@ -56,7 +56,7 @@ void TimerManager::handleExpireTime()
     }
 }
 
-int TimerManager::getExpireTime()
+int TimerManager::getNextExpireTimer()
 {
     std::lock_guard<std::mutex> lock(TMlock);
 

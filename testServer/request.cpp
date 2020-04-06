@@ -76,6 +76,7 @@ bool Request::parseRequest()
     {
         if (state == ExpectRequestLine)
         {
+
             const char *crlf = inBuff.findCRLF();
             if (crlf)
             {
@@ -100,6 +101,7 @@ bool Request::parseRequest()
             const char *crlf = inBuff.findCRLF();
             if (crlf)
             {
+
                 const char *colon = std::find((const char *)inBuff.peek(), crlf, ':');
 
                 if (colon != crlf)
@@ -119,7 +121,6 @@ bool Request::parseRequest()
             }
         }
     }
-
     return ok;
 }
 
@@ -201,11 +202,12 @@ bool Request::parseRequestLine(const char *begin, const char *end)
     bool succeed = false;
     const char *start = begin;
     const char *space = std::find(start, end, ' ');
+    std::string s(begin, end);
     if (space != end && setMethod(start, space))
     {
         start = space + 1;
         space = std::find(start, end, ' ');
-        if (space != space)
+        if (space != end)
         {
             const char *question = std::find(start, space, '?');
 
@@ -220,7 +222,6 @@ bool Request::parseRequestLine(const char *begin, const char *end)
             }
             start = space + 1;
             succeed = (end - start == 8 && std::equal(start, end - 1, "HTTP/1."));
-
             if (succeed)
             {
                 if (*(end - 1) == '1')
@@ -263,7 +264,8 @@ void Request::setPath(const char *begin, const char *end)
     if (subPath == "/")
         subPath = "/index.html";
 
-    path = subPath;
+    path = "../testServer" + subPath;
+    //printf("%s\n", subPath.data());
 }
 
 void Request::setQuery(const char *begin, const char *end)

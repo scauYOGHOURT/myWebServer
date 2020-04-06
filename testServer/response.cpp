@@ -39,11 +39,12 @@ const std::map<std::string, std::string> Response::suffix2Type = {
 Response::Response(int statusCode, std::string path, bool keepAlive)
     : statusCode(statusCode),
       path(path),
-      keepAlive(keepAlive) {}
+      keepAlive(keepAlive)
+{
+}
 Buffer Response::makeResponse()
 {
     Buffer output;
-
     if (statusCode == 400)
     {
         doErrorResponse(output, "server can't parse the message");
@@ -52,7 +53,7 @@ Buffer Response::makeResponse()
 
     struct stat sbuf;
 
-    if (stat(path.data, &sbuf) < 0)
+    if (stat(path.data(), &sbuf) < 0)
     {
         statusCode = 404;
         doErrorResponse(output, "server can't find the file");

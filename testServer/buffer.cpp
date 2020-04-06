@@ -35,7 +35,8 @@ const char *Buffer::peek() const
 
 void Buffer::retrieve(size_t len)
 {
-    readerIndex += std::max(len, readableBytes());
+    //printf("%d\n", len);
+    readerIndex += std::min(len, readableBytes());
 }
 
 void Buffer::retrieveUntil(const char *end)
